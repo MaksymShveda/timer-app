@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 
 const Timer = () => {
     const [timerData, setTimerData] = useState(0);
-    const [countDown, setCountDown] = useState();
+    const [countDown, setCountDown] = useState("");
     
     const startNewTimer = () => {
         const newTimer = interval(1000)
@@ -20,15 +20,17 @@ const Timer = () => {
             .subscribe((value) => {
                 setTimerData(value);
             });
-            setCountDown(newTimer)
+            setCountDown(newTimer);
     };
 
     const deleteTimer = () => {
-
+        countDown.unsubscribe();
+        setTimerData(0);
+        setCountDown("");
     };
 
-    const handleTimer = (countDown) =>{
-        countDown ? startNewTimer() : deleteTimer();
+    const handleTimer = () =>{
+        countDown ? deleteTimer() : startNewTimer();
     };
 
     return (
@@ -41,7 +43,7 @@ const Timer = () => {
             </div>
         </div>
     
-    )
+    );
 };
 
 
