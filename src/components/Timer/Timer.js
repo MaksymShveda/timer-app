@@ -51,11 +51,18 @@ const Timer = () => {
             setTimerCache(timerData);
             setCountDown('');
         }
-    }
+    };
 
     const handleReset = () => {
+        if(countDown){
+            countDown.unsubscribe();
+        }
 
-    }
+        const newTimer = interval(1000).subscribe((value) => {
+            setTimerData(value);
+        });
+        setCountDown(newTimer);
+    };
 
     return (
         <div id="timer">
