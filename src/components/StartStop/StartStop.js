@@ -1,9 +1,9 @@
 
 
-const StartStop = () => {
+const StartStop = ({handleTimer}) => {
     return (
-        <button>Start/Stop</button>
+        <button onClick={handleTimer}>Start/Stop</button>
     )
-}
+};
 
 export default StartStop;
