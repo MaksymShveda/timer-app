@@ -4,26 +4,27 @@ import Pause from '../Pause/Pause';
 import StartStop from "../StartStop/StartStop";
 
 
-import { interval } from "rxjs";
-import { map } from 'rxjs/operators';
+import { Observable } from "rxjs";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const Timer = () => {
     const [timerData, setTimerData] = useState(0);
-    const [timerCache, setTimerCache] = useState(0);
     const [countDown, setCountDown] = useState("");
     const [isClickedOnce, setClicked] = useState(false)
     
     const startNewTimer = () => {
-        const newTimer = interval(1000)
-            .pipe(
-                map((value) => value + 1))
-            .subscribe((value) => {
-                setTimerData(value + timerCache);
-            });
-            setCountDown(newTimer);
+        const newTimer = new Observable((subscriber) => {
+            setInterval(() => {
+            subscriber.next(value => value + 1)
+        
+            }, 1000)
+        }).subscribe((value) => {
+            setTimerData(value)
+        });
+        setCountDown(newTimer)
     };
+
 
     const deleteTimer = () => {
         countDown.unsubscribe();
@@ -38,7 +39,7 @@ const Timer = () => {
     const handlePause = () => {
         if(!isClickedOnce){
             setClicked(true);
-            const timerForClick = setTimeout(()=>{
+            const timerForClick = setTimeout(() => {
                 setClicked(false);
                 clearTimeout(timerForClick);
             }, 300)
@@ -48,7 +49,6 @@ const Timer = () => {
                 countDown.unsubscribe();
             };
 
-            setTimerCache(timerData);
             setCountDown('');
         }
     };
@@ -56,13 +56,22 @@ const Timer = () => {
     const handleReset = () => {
         if(countDown){
             countDown.unsubscribe();
-        }
+        };
 
-        const newTimer = interval(1000).subscribe((value) => {
-            setTimerData(value);
-        });
+        setTimerData(0);
+
+        const newTimer = new Observable((subscriber) =>{
+            setInterval(() => {
+                subscriber.next(value => value + 1)
+            
+                }, 1000)
+            }).subscribe((value) => {
+                setTimerData(value)
+            });
+    
         setCountDown(newTimer);
     };
+
 
     return (
         <div id="timer">
